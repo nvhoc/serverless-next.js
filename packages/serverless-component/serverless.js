@@ -336,102 +336,11 @@ class NextjsComponent extends Component {
     );
 
     const defaultEdgeLambdaPublishOutputs = await defaultEdgeLambda.publishVersion();
-
-    let defaultCloudfrontInputs;
-    if (inputs.cloudfront && inputs.cloudfront.defaults) {
-      defaultCloudfrontInputs = inputs.cloudfront.defaults;
-      delete inputs.cloudfront.defaults;
-    } else {
-      defaultCloudfrontInputs = {};
-    }
-
-    // validate that the custom config paths match generated paths in the manifest
-    this.validatePathPatterns(
-      Object.keys(customCloudFrontConfig),
-      defaultBuildManifest
-    );
-
-    // Add any custom cloudfront configuration
-    // this includes overrides for _next, static and api
-    Object.entries(customCloudFrontConfig).map(([path, config]) => {
-      let edgeConfig = {
-        ...(config["lambda@edge"] || {})
-      };
-
-      // here we are removing configs that cannot be overriden
-      if (path === "api/*") {
-        // for "api/*" we need to make sure we arent overriding the predefined lambda handler
-        // delete is idempotent so it's safe
-        delete edgeConfig["origin-request"];
-      } else if (!["static/*", "_next/*"].includes(path)) {
-        // for everything but static/* and _next/* we want to ensure that they are pointing
-        // at our lambda
-        edgeConfig[
-          "origin-request"
-        ] = `${defaultEdgeLambdaOutputs.arn}:${defaultEdgeLambdaPublishOutputs.version}`;
-      }
-
-      cloudFrontOrigins[0].pathPatterns[path] = {
-        // spread the existing value if there is one
-        ...cloudFrontOrigins[0].pathPatterns[path],
-        // spread custom config
-        ...config,
-        "lambda@edge": {
-          // spread the proivded value
-          ...(cloudFrontOrigins[0].pathPatterns[path] &&
-            cloudFrontOrigins[0].pathPatterns[path]["lambda@edge"]),
-          // then overrides
-          ...edgeConfig
-        }
-      };
-    });
-
-    // make sure that origin-response is not set.
-    // this is reserved for serverless-next.js usage
-    let defaultLambdaAtEdgeConfig = {
-      ...(defaultCloudfrontInputs["lambda@edge"] || {})
-    };
-    delete defaultLambdaAtEdgeConfig["origin-response"];
-
-    const cloudFrontOutputs = await cloudFront({
-      defaults: {
-        ttl: 0,
-        forward: {
-          cookies: "all",
-          queryString: true,
-          ...defaultCloudfrontInputs.forward
-        },
-        ...defaultCloudfrontInputs,
-        // everything after here cant be overriden
-        allowedHttpMethods: ["HEAD", "GET"],
-        "lambda@edge": {
-          ...defaultLambdaAtEdgeConfig,
-          "origin-request": `${defaultEdgeLambdaOutputs.arn}:${defaultEdgeLambdaPublishOutputs.version}`
-        }
-      },
-      origins: cloudFrontOrigins
-    });
-
-    let appUrl = cloudFrontOutputs.url;
-
-    // create domain
-    const { domain, subdomain } = obtainDomains(inputs.domain);
-    if (domain) {
-      const domainComponent = await this.load("@serverless/domain");
-      const domainOutputs = await domainComponent({
-        privateZone: false,
-        domain,
-        subdomains: {
-          [subdomain]: cloudFrontOutputs
-        }
-      });
-      appUrl = domainOutputs.domains[0];
-    }
-
+    
     return {
-      appUrl,
+      lambda: `${defaultEdgeLambdaOutputs.arn}:${defaultEdgeLambdaPublishOutputs.version}`,
       bucketName: bucketOutputs.name
-    };
+    }
   }
 
   async remove() {

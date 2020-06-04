@@ -1,6 +1,6 @@
 {
-  "name": "serverless-next.js",
-  "version": "1.12.0-alpha.7",
+  "name": "serverless-next-custom.js",
+  "version": "0.0.3",
   "description": "Serverless nextjs powered by Serverless Components",
   "main": "serverless.js",
   "repository": {
@@ -28,9 +28,9 @@
     "@serverless/aws-s3": "^4.2.0",
     "@serverless/core": "^1.0.0",
     "@serverless/domain": "^6.1.0",
-    "@sls-next/lambda-at-edge": "file:../lambda-at-edge",
-    "@sls-next/s3-static-assets": "file:../s3-static-assets",
+    "@sls-next/lambda-at-edge": "^1.2.0-alpha.4",
+    "@sls-next/s3-static-assets": "^1.1.0-alpha.1",
     "fs-extra": "^8.1.0",
-    "next-aws-cloudfront": "file:../lambda-at-edge-compat"
+    "next-aws-cloudfront": "^1.2.0-alpha.1"
   }
 }
