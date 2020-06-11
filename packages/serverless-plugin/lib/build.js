@@ -30,7 +30,7 @@ module.exports = async function() {
   const servicePackage = this.serverless.service.package;
   const nextAwsLambdaPath = path.relative(
     nextConfigDir,
-    path.dirname(require.resolve("next-aws-lambda"))
+    path.dirname(require.resolve("next-aws-cloudfront"))
   );
   servicePackage.include = servicePackage.include || [];
   servicePackage.include.push(
@@ -66,11 +66,11 @@ module.exports = async function() {
 
   await rewritePageHandlers(nextPages, customHandler);
 
-  nextPages.forEach(page => {
-    const functionName = page.functionName;
-    this.serverless.service.functions[functionName] =
-      page.serverlessFunction[functionName];
-  });
+  // nextPages.forEach(page => {
+  //   const functionName = page.functionName;
+  //   this.serverless.service.functions[functionName] =
+  //     page.serverlessFunction[functionName];
+  // });
 
   this.serverless.service.setFunctionNames();
 

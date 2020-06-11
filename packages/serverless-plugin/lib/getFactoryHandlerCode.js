@@ -31,5 +31,5 @@ module.exports = (jsHandlerPath, customHandlerPath) => {
 
   return lambdaHandlerWithFactory
     .replace(PAGE_BUNDLE_PATH, `./${basename}.original.js`)
-    .replace(HANDLER_FACTORY_PATH, customHandlerPath || "next-aws-lambda");
+    .replace(HANDLER_FACTORY_PATH, customHandlerPath || "next-aws-cloudfront");
 };
