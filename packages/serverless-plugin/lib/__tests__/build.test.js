@@ -81,12 +81,12 @@ describe("build", () => {
     });
   });
 
-  it("includes next-aws-cloudfront in node_modules/", () => {
+  it("includes next-aws-cloudfront-custom in node_modules/", () => {
     expect.assertions(1);
     const nextConfigDir = "path/to/next-app";
     const nextAwsLambdaRelativePath = path.relative(
       nextConfigDir,
-      path.dirname(require.resolve("next-aws-cloudfront"))
+      path.dirname(require.resolve("next-aws-cloudfront-custom"))
     );
 
     const parsedNextConfig = parsedNextConfigurationFactory();

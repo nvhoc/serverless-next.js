@@ -7,8 +7,8 @@ const lambdaHandlerWithFactory = `
   const handlerFactory = require("${HANDLER_FACTORY_PATH}");
 
   module.exports.render = async (event, context) => {
-    const handler = handlerFactory(page);
-    const responsePromise = handler(event, context);
+    const { req, res, responsePromise } = handlerFactory(event.Records[0].cf);
+    page.render(req, res);
     return responsePromise;
   };
 `;
@@ -31,5 +31,5 @@ module.exports = (jsHandlerPath, customHandlerPath) => {
 
   return lambdaHandlerWithFactory
     .replace(PAGE_BUNDLE_PATH, `./${basename}.original.js`)
-    .replace(HANDLER_FACTORY_PATH, customHandlerPath || "next-aws-cloudfront");
+    .replace(HANDLER_FACTORY_PATH, customHandlerPath || "next-aws-cloudfront-custom");
 };

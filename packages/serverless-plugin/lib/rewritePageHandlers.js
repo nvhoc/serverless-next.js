@@ -3,6 +3,9 @@ const { promisify } = require("util");
 const getFactoryHandlerCode = require("./getFactoryHandlerCode");
 const logger = require("../utils/logger");
 
+const pagePathReWrite = path => {
+  return path.replace(/\.\.\./g, "___");
+};
 const processJsHandler = async (nextPage, customHandler) => {
   const writeFileAsync = promisify(fs.writeFile);
   const renameAsync = promisify(fs.rename);
@@ -20,7 +23,10 @@ const processJsHandler = async (nextPage, customHandler) => {
   await renameAsync(nextPage.pagePath, nextPage.pageOriginalPath);
 
   // sls-next-build/page.compat.js -> sls-next-build/page.js
-  await renameAsync(nextPage.pageCompatPath, nextPage.pagePath);
+  await renameAsync(
+    nextPage.pageCompatPath,
+    pagePathReWrite(nextPage.pagePath)
+  );
 };
 
 module.exports = (nextPages, customHandler) => {

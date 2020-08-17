@@ -1,9 +1,9 @@
 {
-  "name": "next-aws-cloudfront",
-  "version": "1.2.0-alpha.1",
+  "name": "next-aws-cloudfront-custom",
+  "version": "0.0.1",
   "description": "Compat layer for running next.js apps in Lambda@Edge",
-  "main": "next-aws-cloudfront.js",
-  "types": "next-aws-cloudfront.d.ts",
+  "main": "index.js",
+  "types": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/danielcondemarin/serverless-next.js.git",
