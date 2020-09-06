@@ -1,4 +1,5 @@
 const path = require("path");
+const { pagePathReWrite } = require("../utils/path-rw");
 const PAGE_BUNDLE_PATH = "/*page_bundle_path_placeholder*/";
 const HANDLER_FACTORY_PATH = "/*handler_factory_path_placeholder*/";
 
@@ -30,6 +31,6 @@ module.exports = (jsHandlerPath, customHandlerPath) => {
   }
 
   return lambdaHandlerWithFactory
-    .replace(PAGE_BUNDLE_PATH, `./${basename}.original.js`)
+    .replace(PAGE_BUNDLE_PATH, `./${pagePathReWrite(basename)}.original.js`)
     .replace(HANDLER_FACTORY_PATH, customHandlerPath || "next-aws-cloudfront-custom");
 };
