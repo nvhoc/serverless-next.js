@@ -9,6 +9,7 @@ const lambdaHandlerWithFactory = `
 
   module.exports.render = async (event, context) => {
     const { req, res, responsePromise } = handlerFactory(event.Records[0].cf);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     page.render(req, res);
     return responsePromise;
   };
