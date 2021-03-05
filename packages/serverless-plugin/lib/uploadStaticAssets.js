@@ -11,9 +11,14 @@ module.exports = async function() {
 
   const uploadDirToS3 = uploadDirToS3Factory(this.providerRequest, buildId);
 
-  const [bucketNameFromConfig, uploadBuildAssets] = this.getPluginConfigValues(
+  const [
+    bucketNameFromConfig,
+    uploadBuildAssets,
+    assetsPrefix = ""
+  ] = this.getPluginConfigValues(
     "assetsBucketName",
-    "uploadBuildAssets"
+    "uploadBuildAssets",
+    "assetsPrefix"
   );
 
   if (bucketNameFromConfig) {
@@ -46,7 +51,7 @@ module.exports = async function() {
       {
         bucket: staticAssetsBucket,
         truncate: "static",
-        rootPrefix: "_next"
+        rootPrefix: path.join(assetsPrefix, "_next")
       }
     );
     uploadPromises.push(buildAssetsUpload);
